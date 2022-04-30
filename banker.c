@@ -16,7 +16,7 @@
 int is_safe(int *total_r, int **alloc, int **need)
 {
     /*finished array, safe sequence array, and work vector*/
-    int F[N_PROC], safe_seq[N_PROC], W[N_RES], ind = 0;
+    int F[N_PROC], safe_seq[N_PROC], W[N_RES], P = 0;
     for (int i = 0; i < N_PROC; i++)
     {
         F[i] = FALSE;
@@ -47,7 +47,7 @@ int is_safe(int *total_r, int **alloc, int **need)
                 if (!flag)
                 {
                     /*if its safe increase ind and add it to safe seq*/
-                    safe_seq[ind++] = i;
+                    safe_seq[P++] = i;
                     for (int j = 0; j < N_RES; j++)
                     {
                         /* "give back" resources */
