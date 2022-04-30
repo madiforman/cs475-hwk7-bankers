@@ -1,1 +1,1 @@
-/* declarations related to banker's algorithm */
+int is_safe(int *available, int **alloc, int **need);
