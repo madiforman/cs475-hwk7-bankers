@@ -3,17 +3,27 @@
 #include "banker.h"
 #include "vector.h"
 
-int is_safe(int *avail, int **alloc, int **need)
+#define TRUE 1 /*boolean T/F value declarations (not necessary)*/
+#define FALSE 0
+/**
+ * @brief Safety algorithm portion of Banker's algorithm
+ *
+ * @param total_r total resource vector
+ * @param alloc allocated resource matrix
+ * @param need  needed resource matrix
+ * @return int 1 if sequence is safe 0 if not
+ */
+int is_safe(int *total_r, int **alloc, int **need)
 {
     /*finished array, safe sequence array, and work vector*/
     int F[N_PROC], safe_seq[N_PROC], W[N_RES], ind = 0;
     for (int i = 0; i < N_PROC; i++)
     {
-        F[i] = 0;
+        F[i] = FALSE;
     }
     /*copy total resource vector into work vector*/
-    copy_vector(avail, W);
-    /*calculate work that needs to be done*/
+    copy_vector(total_r, W);
+    /*calculate work that needs to be done to find availability*/
     find_work(W, alloc);
 
     /*** BANKER'S SAFETY ALGORITHM ***/
@@ -24,13 +34,13 @@ int is_safe(int *avail, int **alloc, int **need)
             /*if process i has not yet been set*/
             if (!F[i])
             {
-                int flag = 0;
+                int flag = FALSE;
                 for (int j = 0; j < N_RES; j++)
                 {
                     /*check if process i's needs can be met*/
                     if (need[i][j] > W[j])
                     {
-                        flag = 1;
+                        flag = TRUE;
                         break;
                     }
                 }
@@ -44,18 +54,18 @@ int is_safe(int *avail, int **alloc, int **need)
                         W[j] += alloc[i][j];
                     }
                     /*mark as finished*/
-                    F[i] = 1;
+                    F[i] = TRUE;
                 }
             }
         }
     }
     /*check to see if all indexes of F are 1*/
-    int pflag = 0;
+    int pflag = FALSE;
     for (int i = 0; i < N_PROC; i++)
     {
         if (!F[i])
         {
-            pflag = 1;
+            pflag = TRUE;
             /*if an unfinished process found, set F[i] to index it was found out for printing unsafe seq*/
             F[i] = i;
         }
@@ -69,19 +79,19 @@ int is_safe(int *avail, int **alloc, int **need)
             printf("T%d => ", safe_seq[i]);
         }
         printf("T%d\n", safe_seq[N_PROC - 1]);
-        return 1;
+        return TRUE;
     }
     else
     {
         printf("UNSAFE:\t");
         for (int i = 0; i < N_PROC; i++)
         {
-            if (F[i] != 1)
+            if (F[i] != TRUE)
             {
                 printf("T%d ", F[i]);
             }
         }
         printf("can't finish\n");
-        return 0;
+        return FALSE;
     }
 }
