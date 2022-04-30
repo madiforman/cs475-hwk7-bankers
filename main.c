@@ -4,7 +4,7 @@
  Author      : Madison Sanchez-Forman
  Version     : 4.30.22
  Description : Uses Edsger Dijkstra's deadlock avoidance algorithm by simulating
- allocating resources to processes and seeing if deadlocks
+ resource allocation and checking to see if deadlocks occur
  ============================================================================
  */
 #include <stdio.h>
@@ -12,15 +12,14 @@
 #include <stdio.h>
 #include "vector.h"
 #include "banker.h"
-
-/*** Globals and Prototypes***/
+/*** Prototypes ***/
+int sanity_check(int *available, int **alloc, int **need);
+/*** Globals ***/
 int N_RES;  /*num resources*/
 int N_PROC; /*num processes*/
-int sanity_check(int *available, int **alloc, int **max, int **need);
 
 int main(int argc, char *argv[])
 {
-  /*check for correct number of arguments*/
   if (argc != 2)
   {
     printf("Usage: ./bankers <state file> \n");
@@ -34,23 +33,25 @@ int main(int argc, char *argv[])
     {
       fscanf(fp, "%d", &N_RES);
       fscanf(fp, "%d", &N_PROC);
-      int *total_r = (int *)malloc(sizeof(int) * N_PROC); /*malloc availability vector*/
+      /*allocate total resource vector*/
+      int *total_r = (int *)malloc(sizeof(int) * N_PROC);
       for (i = 0; i < N_RES; i++)
       {
+        /*read in values*/
         fscanf(fp, "%d", &total_r[i]);
       }
       /*initalize main matrix structures*/
       int **max = read_mtrx(fp, 'w');
       int **alloc = read_mtrx(fp, 'w');
       int **need = read_mtrx(fp, 'r');
-      /*calculate need*/
+      /* calculate need */
       sub_mtrx(max, alloc, need);
-      /*if the file doesnt pass sanity check return*/
-      if (!sanity_check(total_r, alloc, max, need))
+      /* if the file passes sanity check run safety algorithm */
+      if (!sanity_check(total_r, alloc, need))
       {
         is_safe(total_r, alloc, need);
       }
-      /*cleanup*/
+      /* either way, free up memory and exit cleanly */
       free(total_r);
       free(max);
       free(alloc);
@@ -73,7 +74,7 @@ int main(int argc, char *argv[])
  * @param need need matrix
  * @return int 1 if error found 0 else
  */
-int sanity_check(int *available, int **alloc, int **max, int **need)
+int sanity_check(int *available, int **alloc, int **need)
 {
   int total_r = sum_vector(available);
   for (int i = 0; i < N_RES; i++)
