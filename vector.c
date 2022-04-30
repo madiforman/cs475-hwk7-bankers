@@ -20,13 +20,12 @@ void sub_mtrx(int **MA, int **MB, int **MC)
     }
 }
 /**
- * @brief Used to caclulate work to be done given total resource vector
- * in bankers.c
+ * @brief Used to caclulate available resource vector in bankers.c
  *
  * @param W total work vector
  * @param alloc matrix
  */
-void find_work(int *W, int **alloc)
+void find_available(int *W, int **alloc)
 {
     for (int i = 0; i < N_PROC; i++)
     {

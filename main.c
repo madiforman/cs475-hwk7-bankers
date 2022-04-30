@@ -34,10 +34,10 @@ int main(int argc, char *argv[])
     {
       fscanf(fp, "%d", &N_RES);
       fscanf(fp, "%d", &N_PROC);
-      int *available = (int *)malloc(sizeof(int) * N_PROC); /*malloc availability vector*/
+      int *total_r = (int *)malloc(sizeof(int) * N_PROC); /*malloc availability vector*/
       for (i = 0; i < N_RES; i++)
       {
-        fscanf(fp, "%d", &available[i]);
+        fscanf(fp, "%d", &total_r[i]);
       }
       /*initalize main matrix structures*/
       int **max = read_mtrx(fp, 'w');
@@ -46,22 +46,23 @@ int main(int argc, char *argv[])
       /*calculate need*/
       sub_mtrx(max, alloc, need);
       /*if the file doesnt pass sanity check return*/
-      if (sanity_check(available, alloc, max, need))
+      if (!sanity_check(total_r, alloc, max, need))
       {
-        return 0;
+        is_safe(total_r, alloc, need);
       }
-      else
-      {
-        /*else run safety algorithm*/
-        is_safe(available, alloc, need);
-      }
+      /*cleanup*/
+      free(total_r);
+      free(max);
+      free(alloc);
+      free(need);
+      return 0;
     }
     else
     {
       printf("File not found: %s\n", argv[1]);
+      return 0;
     }
   }
-  return 0;
 }
 /**
  * @brief Preforms state file integrity check before running bankers algorithm

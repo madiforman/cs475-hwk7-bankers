@@ -2,8 +2,8 @@
 #include <stdlib.h>
 #include "banker.h"
 #include "vector.h"
-
-#define TRUE 1 /*boolean T/F value declarations (not necessary)*/
+/*boolean T/F value declarations (not necessary)*/
+#define TRUE 1
 #define FALSE 0
 /**
  * @brief Safety algorithm portion of Banker's algorithm
@@ -23,8 +23,8 @@ int is_safe(int *total_r, int **alloc, int **need)
     }
     /*copy total resource vector into work vector*/
     copy_vector(total_r, W);
-    /*calculate work that needs to be done to find availability*/
-    find_work(W, alloc);
+    /*calculate availability vector*/
+    find_available(W, alloc);
 
     /*** BANKER'S SAFETY ALGORITHM ***/
     for (int k = 0; k < N_PROC; k++)
