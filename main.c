@@ -1,6 +1,6 @@
 /*
  ============================================================================
- Name        : Bankers Algorithm
+ Name        : Banker's Algorithm
  Author      : Madison Sanchez-Forman
  Version     : 4.30.22
  Description : Uses Edsger Dijkstra's deadlock avoidance algorithm by simulating
