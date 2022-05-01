@@ -12,8 +12,6 @@
 #include <stdio.h>
 #include "vector.h"
 #include "banker.h"
-/*** Prototypes ***/
-int sanity_check(int *available, int **alloc, int **need);
 /*** Globals ***/
 int N_RES;  /*num resources*/
 int N_PROC; /*num processes*/
@@ -64,39 +62,4 @@ int main(int argc, char *argv[])
       return 0;
     }
   }
-}
-/**
- * @brief Preforms state file integrity check before running bankers algorithm
- *
- * @param available total resource vector
- * @param alloc allocate matrix
- * @param max max matrix
- * @param need need matrix
- * @return int 1 if error found 0 else
- */
-int sanity_check(int *available, int **alloc, int **need)
-{
-  int total_r = sum_vector(available);
-  for (int i = 0; i < N_RES; i++)
-  { /*check that each processes' currently allocated resources do not exceed the total # of resources */
-    if (sum_vector(alloc[i]) > total_r)
-    {
-      printf("Integrity test failed: allocated resources exceed total resources\n");
-      return 1;
-    }
-  }
-  for (int i = 0; i < N_PROC; i++)
-  {
-    for (int j = 0; j < N_RES; j++)
-    {
-      /*check that each processes' needs do not exceed its max demands*/
-      if (need[i][j] < 0)
-      {
-        printf("Integrity test failed: allocated resources exceed total resources for Thread %d\n", i);
-        printf("Need %d instances of resource %d\n", need[i][j], j);
-        return 1;
-      }
-    }
-  }
-  return 0;
 }
